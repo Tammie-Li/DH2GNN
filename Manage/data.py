@@ -3,6 +3,14 @@ import torch
 from torch_geometric.data import Data, DataLoader
 
 
+class Data:
+    def __init__(self):
+        self.train_data = None
+        self.test_data = None
+        self.train_label = None
+        self.test_label = None
+
+
 def gen_data_list(data, label, edge_type='corr', feature_type='psd_group'):
     """
     Generate graph data list from matrix data and label.
