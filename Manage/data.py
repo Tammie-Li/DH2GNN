@@ -1,14 +1,23 @@
 from tqdm import trange
 import torch
+import os
+import numpy as np
 from torch_geometric.data import Data, DataLoader
 
 
 class Data:
-    def __init__(self):
-        self.train_data = None
-        self.test_data = None
-        self.train_label = None
-        self.test_label = None
+    def __init__(self, sub_num, dataset_name, dir):
+        self.sub_num = sub_num
+        self.dataset_name = dataset_name
+        
+        self.train_data = np.load(os.path.join(dir, f"{self.dataset_name}", f"{self.sub_num}:>02d", "x_train.npy"))
+        self.test_data = np.load(os.path.join(dir, f"{self.dataset_name}", f"{self.sub_num}:>02d", "x_test.npy"))
+        self.train_label = np.load(os.path.join(dir, f"{self.dataset_name}", f"{self.sub_num}:>02d", "y_train.npy"))
+        self.test_label = np.load(os.path.join(dir, f"{self.dataset_name}", f"{self.sub_num}:>02d", "y_test.npy"))
+
+    def get_data(self):
+        print(f"generate dataset {self.dataset_name} : No. {self.sub_num:>02d}")
+        pass
 
 
 def gen_data_list(data, label, edge_type='corr', feature_type='psd_group'):

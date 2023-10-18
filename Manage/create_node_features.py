@@ -21,8 +21,6 @@ def sos_filter(data, f_1, f_2, fs=256):
 
 
 
-
-
 def gen_features_hvg(x):
     """
     Generate node features based on hvg of the node.
