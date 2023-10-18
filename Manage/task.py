@@ -13,7 +13,7 @@ class CalculateTask:
         cal_task_list introduction
         :return: 
                 
-               [model, dataset, train_sub_id, test_sub_id] 
+               [model, dataset, scene, train_sub_id, test_sub_id] 
         """
         # 场景不一样导致的计算任务区别，仅仅体现在训练集和测试集上
         task_list = []
@@ -25,32 +25,34 @@ class CalculateTask:
                 for scene in self.scenes:
                     if scene == "cross_day" or scene == "subject_d":
                         if not _cross_exp_flag and scene == "cross_day": continue
+                        if not _cross_exp_flag and scene == "subject_d": continue
                         for sub_id in range(1, self.subnums[i]+1):
-                            single_task = {"model": model, "dataset": dataset, "train_sub_id": sub_id, "test_sub_id": sub_id}
+                            single_task = {"model": model, "dataset": dataset, "scene": scene, "train_sub_id": sub_id, "test_sub_id": sub_id}
                             task_list.append(single_task)
                     elif scene == "cross_data": continue
                     elif scene == "subject_i":
-                        for sub_id in range(1, self.subnums[i]+1):
-                            single_task = {"model": model, "dataset": dataset, "train_sub_id": sub_id, "test_sub_id": (sub_id+1)//self.subnums}
+                        for sub_id in range(self.subnums[i]):
+                            single_task = {"model": model, "dataset": dataset, "scene": scene, "train_sub_id": sub_id+1, "test_sub_id": 1+(sub_id+1)%(self.subnums[i])}
                             task_list.append(single_task)
         if scene == "cross_data":
+            # 多种情况（A. THU to CAS  B. THU to GIST  C. CAS to THU  
+            #          D. CAS to GIST E. GIST to THU  F. GIST to CAS）
+            # A. THU to CAS
             pass
-        print(task_list)
+        for i in range(len(task_list)):
+            print(task_list[i], end='\n')
+            with open("task_list.txt", "a+") as f:
+                f.writelines(task_list[i]["model"] + "\t" +
+                             task_list[i]["dataset"] + "\t" +
+                             task_list[i]["scene"] + "\t" +
+                             str(task_list[i]["train_sub_id"]) + "\t" +
+                             str(task_list[i]["test_sub_id"]) + "\t" + "\n")
+            
+        
 
 
                     
         
 
 
-
-        for scene in self.scenes:
-            if scene == "cross_day":
-                # 跨时间场景只作用在CAS数据集上
-                pass
-
-
-            if scene == "subject_d":
-                self._generate_task_on_dataset()
-            elif scene == "subject_i":
-                pass
 
